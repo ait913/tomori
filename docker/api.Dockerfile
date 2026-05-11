@@ -2,12 +2,14 @@ FROM node:22-alpine
 
 ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
+ENV NODE_ENV=production
 
 RUN corepack enable
+RUN apk add --no-cache tini
 
 WORKDIR /app
 
-COPY package.json pnpm-workspace.yaml tsconfig.base.json ./
+COPY package.json pnpm-workspace.yaml pnpm-lock.yaml tsconfig.base.json ./
 COPY apps/api/package.json apps/api/package.json
 COPY packages/shared/package.json packages/shared/package.json
 COPY packages/shared/tsconfig.json packages/shared/tsconfig.json
@@ -22,18 +24,20 @@ COPY packages/safety/package.json packages/safety/package.json
 COPY packages/safety/tsconfig.json packages/safety/tsconfig.json
 COPY packages/safety/src packages/safety/src
 COPY apps/api apps/api
+COPY db db
+COPY docker/entrypoint.sh /usr/local/bin/entrypoint.sh
 
-RUN pnpm install --frozen-lockfile=false
+RUN pnpm install --frozen-lockfile
 RUN pnpm --filter @tomori/shared build
 RUN pnpm --filter @tomori/crypto build
 RUN pnpm --filter @tomori/llm build
 RUN pnpm --filter @tomori/safety build
 RUN pnpm --filter @tomori/api build
-
-WORKDIR /app/apps/api
+RUN chmod +x /usr/local/bin/entrypoint.sh
 
 ENV PORT=3001
 
 EXPOSE 3001
 
-CMD ["pnpm", "start"]
+ENTRYPOINT ["/sbin/tini", "--"]
+CMD ["/usr/local/bin/entrypoint.sh"]
