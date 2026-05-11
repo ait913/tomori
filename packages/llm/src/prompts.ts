@@ -1,5 +1,10 @@
 import type { DialogSummary, MoodLogView, SleepLogView } from "@tomori/shared";
 
+import { maskPII } from "./maskPII.js";
+
+const RECENT_TURN_CAP = 30;
+const RECENT_SUMMARY_CAP = 14;
+
 export const COMMON_PREAMBLE_JA = `あなたはユーザーの生活リズム改善を支援する AI 伴走者「tomori」です。
 診断や医療助言はしません。返答は穏やかで非審判的、押し付けません。
 「〜すべき」ではなく「〜という選択肢もある」と表現します。
@@ -47,14 +52,18 @@ export function buildContext(opts: {
   todaySleep?: SleepLogView;
   todayMood?: MoodLogView[];
 }): { role: "user"; content: string } {
-  const midLines = opts.recentSummaries.map(
+  const cappedSummaries = opts.recentSummaries.slice(0, RECENT_SUMMARY_CAP);
+  const cappedTurns = opts.recentTurns.slice(-RECENT_TURN_CAP);
+
+  const midLines = cappedSummaries.map(
     (summary) =>
       `- ${summary.date} sentiment=${summary.sentiment_score} emotions=[${summary.top_emotions.join(",")}] events=[${summary.key_events.join(",")}]`
   );
 
-  const shortLines = opts.recentTurns.map((turn) => {
+  const shortLines = cappedTurns.map((turn) => {
     const stamp = turn.ts ? `(${turn.ts}) ` : "";
-    return `- ${stamp}[${turn.role}] ${turn.text}`;
+    const text = turn.role === "user" ? maskPII(turn.text) : turn.text;
+    return `- ${stamp}[${turn.role}] ${text}`;
   });
 
   const moodLines = (opts.todayMood ?? []).map(

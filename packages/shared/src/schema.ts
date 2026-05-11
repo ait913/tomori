@@ -3,7 +3,7 @@ import { z } from "zod";
 import { MOOD_TAGS } from "./tags.js";
 
 export const MoodCreateInputSchema = z.object({
-  ts: z.string().datetime().optional(),
+  ts: z.string().datetime({ offset: true }).optional(),
   score: z.number().int().min(1).max(5),
   valence: z.number().min(-1).max(1).optional(),
   arousal: z.number().min(-1).max(1).optional(),
@@ -15,8 +15,8 @@ export const MoodCreateInputSchema = z.object({
 export const SleepReportInputSchema = z
   .object({
     date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
-    bedtime_at: z.string().datetime().optional(),
-    wake_at: z.string().datetime().optional(),
+    bedtime_at: z.string().datetime({ offset: true }).optional(),
+    wake_at: z.string().datetime({ offset: true }).optional(),
     quality: z.number().int().min(1).max(5).optional()
   })
   .refine((value) => value.bedtime_at || value.wake_at || value.quality, {

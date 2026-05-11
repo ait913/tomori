@@ -5,12 +5,14 @@ import type { CrisisCard } from "@tomori/shared";
 const CrisisCardSchema = z.object({
   title: z.string().min(1),
   message: z.string().min(1),
-  hotlines: z.array(
-    z.object({
-      label: z.string().min(1),
-      tel: z.string().min(1)
-    })
-  )
+  hotlines: z
+    .array(
+      z.object({
+        label: z.string().min(1),
+        tel: z.string().min(1)
+      })
+    )
+    .min(1)
 });
 
 export function loadCrisisCardFromEnv(): CrisisCard {
