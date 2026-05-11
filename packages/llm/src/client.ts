@@ -80,9 +80,15 @@ export function createLLMRunner(client: Anthropic = new Anthropic({ apiKey: proc
         }
       }
 
+      const rawStop = response.stop_reason;
+      const stopReason: LLMRunResult["stopReason"] =
+        rawStop === "tool_use" || rawStop === "max_tokens" || rawStop === "stop_sequence"
+          ? rawStop
+          : "end_turn";
+
       return {
         text: text.trim(),
-        stopReason: response.stop_reason ?? "end_turn",
+        stopReason,
         usage: {
           input: response.usage.input_tokens,
           output: response.usage.output_tokens

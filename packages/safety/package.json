@@ -16,6 +16,8 @@
     "typecheck": "tsc -p tsconfig.json --noEmit"
   },
   "dependencies": {
-    "@tomori/shared": "workspace:*"
+    "@tomori/shared": "workspace:*",
+    "@tomori/llm": "workspace:*",
+    "zod": "^3.25.67"
   }
 }

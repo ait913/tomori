@@ -1,5 +1,6 @@
 import { Hono } from "hono";
 import { cors } from "hono/cors";
+import type { ContentfulStatusCode } from "hono/utils/http-status";
 
 import { AppError } from "@tomori/shared";
 import { createKEKProvider } from "@tomori/crypto";
@@ -72,6 +73,8 @@ export function createApp(): Hono<ApiEnv> {
       error_code: appError.code
     });
 
+    const status = appError.status as ContentfulStatusCode;
+
     if (appError.code === "CRISIS_HANDOFF" && appError.details) {
       return c.json(
         fail(
@@ -82,7 +85,7 @@ export function createApp(): Hono<ApiEnv> {
           },
           appError.status
         ).body,
-        appError.status
+        status
       );
     }
 
@@ -95,7 +98,7 @@ export function createApp(): Hono<ApiEnv> {
         },
         appError.status
       ).body,
-      appError.status
+      status
     );
   });
 

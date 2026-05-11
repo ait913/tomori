@@ -1,9 +1,11 @@
+import type { Tool } from "@anthropic-ai/sdk/resources/messages";
+
 import type { DialogSummary } from "@tomori/shared";
 
 export type ToolDef = {
   name: string;
   description: string;
-  input_schema: Record<string, unknown>;
+  input_schema: Tool["input_schema"];
   strict: true;
 };
 

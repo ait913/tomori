@@ -1,8 +1,9 @@
 import type { MiddlewareHandler } from "hono";
 
 import { readSessionCookie, hashToken } from "../lib/auth.js";
+import type { ApiEnv } from "../types.js";
 
-export const sessionMiddleware = (): MiddlewareHandler => async (c, next) => {
+export const sessionMiddleware = (): MiddlewareHandler<ApiEnv> => async (c, next) => {
   const pool = c.get("pool");
   const token = readSessionCookie(c);
 
