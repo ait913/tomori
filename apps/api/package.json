@@ -1,0 +1,23 @@
+{
+  "name": "@tomori/api",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "start": "node dist/index.js"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.95.0",
+    "@hono/node-server": "^1.14.4",
+    "@tomori/crypto": "workspace:*",
+    "@tomori/llm": "workspace:*",
+    "@tomori/safety": "workspace:*",
+    "@tomori/shared": "workspace:*",
+    "hono": "^4.8.3",
+    "pg": "^8.16.0",
+    "resend": "^4.4.0",
+    "zod": "^3.25.67"
+  }
+}
