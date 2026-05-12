@@ -26,10 +26,10 @@ authRoutes.post("/magic/request", async (c) => {
       [email, hashToken(token), createMagicExpiry()]
     );
 
-    const link = `${appConfig.TOMORI_PUBLIC_BASE_URL}/api/auth/magic/verify?token=${encodeURIComponent(token)}`;
+    const link = `${appConfig.TOMORI_API_BASE_URL}/api/auth/magic/verify?token=${encodeURIComponent(token)}`;
     try {
       await resend.emails.send({
-        from: "tomori <onboarding@resend.dev>",
+        from: appConfig.TOMORI_MAIL_FROM,
         to: email,
         subject: "tomori ログインリンク",
         text: `30 分以内にログインしてください: ${link}`
