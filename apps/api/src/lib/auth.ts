@@ -32,12 +32,16 @@ export function setSessionCookie(c: Context, token: string): void {
     secure: true,
     sameSite: "Lax",
     maxAge: 2_592_000,
-    path: "/"
+    path: "/",
+    ...(appConfig.TOMORI_COOKIE_DOMAIN ? { domain: appConfig.TOMORI_COOKIE_DOMAIN } : {})
   });
 }
 
 export function clearSessionCookie(c: Context): void {
-  deleteCookie(c, SESSION_COOKIE, { path: "/" });
+  deleteCookie(c, SESSION_COOKIE, {
+    path: "/",
+    ...(appConfig.TOMORI_COOKIE_DOMAIN ? { domain: appConfig.TOMORI_COOKIE_DOMAIN } : {})
+  });
 }
 
 export function readSessionCookie(c: Context): string | undefined {

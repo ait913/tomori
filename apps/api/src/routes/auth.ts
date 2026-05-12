@@ -107,7 +107,7 @@ authRoutes.get("/magic/verify", async (c) => {
 
     await client.query("COMMIT");
     setSessionCookie(c, sessionToken);
-    c.header("Location", "/");
+    c.header("Location", `${appConfig.TOMORI_PUBLIC_BASE_URL}/`);
     return c.body(null, 302);
   } catch (error) {
     await client.query("ROLLBACK");
